@@ -1,1 +1,19 @@
 @import "tailwindcss";
+
+@theme {
+  --font-sans: "Outfit", system-ui, -apple-system, sans-serif;
+
+  --color-app-bg: #0d0e12;
+  --color-app-surface: #15171e;
+  --color-app-elevated: #1a1d26;
+  --color-app-muted: #11131a;
+
+  --color-gray-650: #9ca3af;
+  --color-gray-750: #374151;
+  --color-gray-850: #252a33;
+
+  --color-rose-450: #fb7185;
+  --color-rose-550: #f43f5e;
+
+  --spacing-4_5: 1.125rem;
+}

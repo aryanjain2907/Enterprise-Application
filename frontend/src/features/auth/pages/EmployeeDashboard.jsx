@@ -1,215 +1,184 @@
-
-import {ChevronUp} from 'lucide-react';
-import './index.css';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { 
+  ChevronUp, 
+  LayoutDashboard, 
+  CalendarDays, 
+  Bot, 
+  LogOut,
+  Sparkles
+} from 'lucide-react';
+import './index.css';
+
 import DashboardView from './DashboardView';
 import EmployeeLeaveManagementView from './EmployeeLeaveManagementView';
 import HRAssistantView from './HRAssistantView';
 
-// const DashboardView = () => <div><h2>🏠 Home Dashboard</h2><p>Welcome back!</p></div>;
-// const EmployeesView = () => <div><h2>👤 Employees</h2><p>Manage your employees here.</p></div>;
-// const ResumeView = () => <div><h2>⚙️ Resume Screener</h2><p>Screen resumes using AI.</p></div>;
-// const CandidatesView = () => <div><h2>👥 Candidates</h2><p>Manage your candidates here.</p></div>;
-// const LeaveManagementView = () => <div><h2>� Leave Management</h2><p>Manage your leave requests here.</p></div>;
-// const HRAssistantView = () => <div><h2>⚙️ Settings</h2><p>Tweak your application preferences.</p></div>;
-
 const EmployeeDashboard = () => {
-    const navigate = useNavigate();
-    const [activeTab, setActiveTab] = useState('dashboard');
-    const [showLogoutPopup, setShowLogoutPopup] = useState(false);
-    
-        const renderContent = () => {
-            switch(activeTab) {
-                case 'dashboard': return <DashboardView />;
-                case 'leave': return <EmployeeLeaveManagementView />;
-                case 'assistant': return <HRAssistantView />;
-                // case 'employees': return <EmployeesView />;
-                // case 'resume': return <ResumeView />;
-                // case 'candidates': return <CandidatesView />;
-                
-                default: return <DashboardView />;
-            }
-        }
+  const navigate = useNavigate();
+  const [activeTab, setActiveTab] = useState('dashboard');
+  const [showLogoutPopup, setShowLogoutPopup] = useState(false);
+  const [currentUser, setCurrentUser] = useState({ username: 'Employee User', role: 'Employee' });
+
+  useEffect(() => {
+    const storedUser = localStorage.getItem('user');
+    if (storedUser) {
+      try {
+        setCurrentUser(JSON.parse(storedUser));
+      } catch (err) {
+        console.error('Error parsing stored user:', err);
+      }
+    }
+  }, []);
+
+  const getInitials = (name) => {
+    if (!name) return 'E';
+    const parts = name.trim().split(/\s+/);
+    if (parts.length >= 2) {
+      return (parts[0][0] + parts[1][0]).toUpperCase();
+    }
+    return parts[0][0].slice(0, 2).toUpperCase();
+  };
+
+  const renderContent = () => {
+    switch (activeTab) {
+      case 'dashboard': return <DashboardView />;
+      case 'leave': return <EmployeeLeaveManagementView />;
+      case 'assistant': return <HRAssistantView />;
+      default: return <DashboardView />;
+    }
+  };
+
+  const navItems = [
+    { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
+    { id: 'leave', label: 'Leave Management', icon: CalendarDays },
+    { id: 'assistant', label: 'HR Assistant', icon: Bot, badge: 'AI' },
+  ];
+
   return (
-    <div className="flex h-screen w-full bg-[#1e1e20] text-gray-200 font-sans overflow-hidden">
-  
-    
-  <aside className="w-64 bg-[#262629] border-r border-[#323235] flex flex-col justify-between">
-    
-    
-    <div>
+    <div className="flex h-screen w-full bg-[#0d0e12] text-gray-200 font-sans overflow-hidden">
       
-      <div className="pt-6 pb-4 px-6">
-        <h1 className="font-bold text-white text-lg tracking-wide">DEVGuard HR</h1>
-        <p className="text-xs text-gray-400 mt-0.5">Enterprise</p>
-      </div>
-
-      
-      <div className="px-3 py-2">
-        <p className="text-[10px] font-bold text-gray-500 uppercase tracking-wider px-3 mb-3">
-          Main Menu
-        </p>
-        
-        <nav className="space-y-1">
-          
-          <div className="w-full px-1">
-            <button 
-              onClick={() => setActiveTab('dashboard')}
-              className="w-full text-left px-3 py-2 rounded-md transition-all text-sm font-medium"
-              style={{ 
-                backgroundColor: activeTab === 'dashboard' ? '#2563eb' : 'transparent', 
-                color: '#fff',
-                fontWeight: activeTab === 'dashboard' ? 'bold' : 'normal'
-              }}
-            >
-              Dashboard
-            </button>
-          </div>
-
-          
-          {/* <div className="w-full px-1">
-            <button 
-              onClick={() => setActiveTab('employees')}
-              className="w-full text-left px-3 py-2 rounded-md transition-all text-sm font-medium"
-              style={{ 
-                backgroundColor: activeTab === 'employees' ? '#2563eb' : 'transparent', 
-                color: '#fff',
-                fontWeight: activeTab === 'employees' ? 'bold' : 'normal'
-              }}
-            >
-              Employees
-            </button>
-          </div> */}
-
-          
-          {/* <div className="w-full px-1">
-            <button 
-              onClick={() => setActiveTab('resume')}
-              className="w-full text-left px-3 py-2 rounded-md transition-all text-sm font-medium flex items-center justify-between"
-              style={{ 
-                backgroundColor: activeTab === 'resume' ? '#2563eb' : 'transparent', 
-                color: '#fff',
-                fontWeight: activeTab === 'resume' ? 'bold' : 'normal'
-              }}
-            >
-              <span>Resume Screener</span>
-              <span className="bg-blue-900/50 text-blue-400 text-[10px] font-bold px-1.5 py-0.5 rounded border border-blue-800/30">AI</span>
-            </button>
-          </div> */}
-          
-          
-          {/* <div className="w-full px-1">
-            <button 
-              onClick={() => setActiveTab('candidates')}
-              className="w-full text-left px-3 py-2 rounded-md transition-all text-sm font-medium"
-              style={{ 
-                backgroundColor: activeTab === 'candidates' ? '#2563eb' : 'transparent', 
-                color: '#fff',
-                fontWeight: activeTab === 'candidates' ? 'bold' : 'normal'
-              }}
-            >
-              Candidates
-            </button>
-          </div> */}
-
-         
-          <div className="w-full px-1">
-            <button 
-              onClick={() => setActiveTab('leave')}
-              className="w-full text-left px-3 py-2 rounded-md transition-all text-sm font-medium"
-              style={{ 
-                backgroundColor: activeTab === 'leave' ? '#2563eb' : 'transparent', 
-                color: '#fff',
-                fontWeight: activeTab === 'leave' ? 'bold' : 'normal'
-              }}
-            >
-              Leave Management
-            </button>
-          </div>
-
-          
-          <div className="w-full px-1">
-            <button 
-              onClick={() => setActiveTab('assistant')}
-              className="w-full text-left px-3 py-2 rounded-md transition-all text-sm font-medium flex items-center justify-between"
-              style={{ 
-                backgroundColor: activeTab === 'assistant' ? '#2563eb' : 'transparent', 
-                color: '#fff',
-                fontWeight: activeTab === 'assistant' ? 'bold' : 'normal'
-              }}
-            >
-              <span>HR Assistant</span>
-              <span className="bg-blue-900/50 text-blue-400 text-[10px] font-bold px-1.5 py-0.5 rounded border border-blue-800/30">AI</span>
-            </button>
-          </div>
-        </nav>
-      </div>
-    </div>
-
-    
-    <div className="p-4 border-t border-[#323235] flex items-center justify-between bg-[#232326]">
-      <div className="flex items-center space-x-3">
-        <div className="w-10 h-10 rounded-full bg-blue-600 text-white font-bold flex items-center justify-center text-sm shadow-inner p-1">
-          
-        </div>
+      {/* Sidebar */}
+      <aside className="app-sidebar w-64 border-r border-gray-800/80 flex flex-col justify-between z-20 shrink-0">
         <div>
-          <h4 className="text-sm font-semibold text-white leading-tight">User Name</h4>
-          <span className="inline-block bg-blue-950 text-blue-400 text-[10px] px-2 py-0.5 rounded-full mt-0.5 font-medium border border-blue-900/50">
-            Employee
-          </span>
+          {/* Logo Brand */}
+          <div className="pt-6 pb-6 px-6 border-b border-gray-800/30 flex items-center space-x-3">
+            <div className="p-2 bg-blue-600/10 rounded-xl border border-blue-500/20 shadow shadow-blue-500/5">
+              <Sparkles className="w-5 h-5 text-blue-500" />
+            </div>
+            <div>
+              <h1 className="font-extrabold text-white text-md tracking-wider leading-tight">DEVGuard HR</h1>
+              <p className="text-[10px] text-gray-500 font-medium tracking-wide">ENTERPRISE PORTAL</p>
+            </div>
+          </div>
+
+          {/* Navigation Menu */}
+          <div className="px-4 py-6">
+            <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest px-3 mb-4">
+              Main Menu
+            </p>
+            
+            <nav className="space-y-1.5">
+              {navItems.map((item) => {
+                const IconComponent = item.icon;
+                const isActive = activeTab === item.id;
+                return (
+                  <button
+                    key={item.id}
+                    onClick={() => setActiveTab(item.id)}
+                    className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl transition-all duration-200 cursor-pointer ${
+                      isActive
+                        ? 'app-nav-active bg-blue-600 text-white font-semibold pl-4'
+                        : 'text-gray-400 hover:bg-[#1a1d26]/80 hover:text-gray-200'
+                    }`}
+                  >
+                    <div className="flex items-center space-x-3">
+                      <IconComponent className={`w-[18px] h-[18px] shrink-0 ${isActive ? 'text-white' : 'text-gray-400'}`} />
+                      <span className="text-sm">{item.label}</span>
+                    </div>
+                    {item.badge && (
+                      <span className={`text-[9px] font-extrabold px-1.5 py-0.5 rounded border ${
+                        isActive 
+                          ? 'bg-white/20 text-white border-white/10' 
+                          : 'bg-blue-500/10 text-blue-400 border-blue-500/20'
+                      }`}>
+                        {item.badge}
+                      </span>
+                    )}
+                  </button>
+                );
+              })}
+            </nav>
+          </div>
         </div>
-      </div>
-      <ChevronUp size={16} className="text-gray-500 cursor-pointer hover:text-gray-300" onClick={() => setShowLogoutPopup(true)}/>
+
+        {/* User profile footer */}
+        <div className="p-4 border-t border-gray-800/80 flex items-center justify-between bg-[#11131a]">
+          <div className="flex items-center space-x-3">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 text-white font-bold flex items-center justify-center text-sm shadow-md border border-emerald-500/20">
+              {getInitials(currentUser?.username)}
+            </div>
+            <div className="min-w-0 max-w-[120px]">
+              <h4 className="text-xs font-bold text-white truncate leading-tight">{currentUser?.username}</h4>
+              <span className="inline-block bg-emerald-500/10 text-emerald-400 text-[9px] px-2 py-0.5 rounded-full mt-1 font-semibold border border-emerald-500/20">
+                Employee
+              </span>
+            </div>
+          </div>
+          <button 
+            onClick={() => setShowLogoutPopup(true)}
+            className="p-1.5 rounded-lg text-gray-500 hover:text-white hover:bg-gray-800/50 cursor-pointer transition-colors"
+            title="Log Out"
+          >
+            <LogOut size={16} />
+          </button>
+        </div>
+      </aside>
+
+      {/* Main Content Area */}
+      <main className="app-main flex-1 flex flex-col overflow-y-auto custom-scrollbar border-l border-gray-900/80">
+        <div className="p-6 sm:p-8 max-w-7xl w-full mx-auto animate-fade-in">
+          {renderContent()}
+        </div>
+      </main>
+
+      {/* Logout Confirmation Dialog */}
+      {showLogoutPopup && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md animate-fade-in">
+          <div className="bg-[#15171e] border border-gray-800 w-full max-w-md p-6 rounded-2xl shadow-2xl text-gray-200 text-center relative mx-4 animate-scale-up">
+            <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-2xl bg-red-950/40 border border-red-900/30 mb-4 shadow shadow-red-500/5">
+              <LogOut className="h-6 w-6 text-red-500" />
+            </div>
+
+            <h3 className="text-xl font-bold text-white mb-2">Confirm Logout</h3>
+            <p className="text-sm text-gray-400 mb-6 px-4">
+              Are you sure you want to sign out of DEVGuard HR? You will be redirected to the login screen.
+            </p>
+
+            <div className="flex space-x-3">
+              <button
+                onClick={() => setShowLogoutPopup(false)}
+                className="flex-1 bg-[#0d0e12] hover:bg-[#1a1d26] text-gray-400 hover:text-white py-3 rounded-xl text-sm font-semibold transition-colors border border-gray-800 cursor-pointer"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => {
+                  localStorage.clear(); 
+                  sessionStorage.clear();
+                  setShowLogoutPopup(false);
+                  navigate('/login');
+                }}
+                className="flex-1 bg-red-600 hover:bg-red-500 text-white py-3 rounded-xl text-sm font-semibold transition-all duration-150 cursor-pointer shadow-lg shadow-red-500/10"
+              >
+                Log Out
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
-  </aside>
+  );
+};
 
-  <main className="flex-1 flex flex-col overflow-y-auto">
-    {renderContent()}
-  </main>
-
-{showLogoutPopup && (
-  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
-
-    <div className="bg-[#262629] border border-[#323235] w-full max-w-sm p-6 rounded-xl shadow-2xl text-gray-200 text-center relative">
-
-      <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-950/50 border border-red-900/40 mb-4">
-        <svg className="h-6 w-6 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-        </svg>
-      </div>
-
-      <h3 className="text-lg font-bold text-white mb-1">Confirm Logout</h3>
-      <p className="text-xs text-gray-400 mb-6">
-        Are you sure you want to sign out of DEVGuard HR? You will be redirected to the login page.
-      </p>
-
-      <div className="flex flex-col space-y-2">
-        <button
-          onClick={() => {
-            localStorage.clear(); 
-            sessionStorage.clear();
-            setShowLogoutPopup(false);
-            navigate('/');
-          }}
-          className="w-full bg-red-600 hover:bg-red-500 text-white py-2 rounded-lg text-sm font-medium transition-colors"
-        >
-          Log Out
-        </button>
-        
-        <button
-          onClick={() => setShowLogoutPopup(false)}
-          className="w-full bg-[#1e1e20] hover:bg-[#323235] text-gray-400 hover:text-white py-2 rounded-lg text-sm font-medium transition-colors border border-[#323235]"
-        >
-          Cancel
-        </button>
-      </div>
-
-    </div>
-  </div>
-)}
-</div>
-  )
-}
-
-export default EmployeeDashboard
+export default EmployeeDashboard;
