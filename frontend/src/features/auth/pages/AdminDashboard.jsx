@@ -1,6 +1,5 @@
 
 import { ChevronUp} from 'lucide-react';
-// import './index.css';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import DashboardView from './DashboardView';
@@ -50,6 +49,7 @@ const AdminDashboard = () => {
     <div>
       
       <div className="pt-6 pb-4 px-6">
+        
         <h1 className="font-bold text-white text-lg tracking-wide">DEVGuard HR</h1>
         <p className="text-xs text-gray-400 mt-0.5">Enterprise</p>
       </div>

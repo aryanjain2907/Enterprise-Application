@@ -17,5 +17,7 @@ authRouter.get("/logout",authController.logoutUserController)
 
 authRouter.get("/get-me", authUser,authController.getMeController)
 
+authRouter.post("/chat", authController.handleChat)
+
 
 export default authRouter

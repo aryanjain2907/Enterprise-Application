@@ -2,6 +2,7 @@ import userModel from "../models/user.model.js";
 import tokenBlacklistModel from "../models/blaklist.model.js";
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
+import axios from 'axios'
 
 
 async function registerUserController(req,res){
@@ -38,7 +39,7 @@ async function registerUserController(req,res){
     res.status(201).json({
         message:"User registered successfully",
         user:{
-            if:user._id,
+            id:user._id,
             username:user.username,
             email:user.email,
             role:user.role
@@ -99,7 +100,7 @@ async function loginUserController(req,res){
 }
 
 
-    async function logoutUserController(req,res){
+async function logoutUserController(req,res){
         const token = req.cookies.token
 
         if(token){
@@ -111,10 +112,10 @@ async function loginUserController(req,res){
         res.status(200).json({
             message:"User logged out successfully"
         })
-    }
+}
 
 
-        async function getMeController(req,res){
+async function getMeController(req,res){
             const user = await userModel.findById(req.user.id)
 
 
@@ -127,6 +128,27 @@ async function loginUserController(req,res){
                     role:user.role
                 }
             })
-        }
+}
     
-export default {loginUserController ,logoutUserController,getMeController,registerUserController}
+const handleChat = async (req, res) => {
+    try {
+        const { message } = req.body;
+
+        if (!message) {
+            return res.status(400).json({ error: "Message is required" });
+        }
+
+        const pythonResponse = await axios.post('http://127.0.0.1:8000/api/chat', {
+            message: message
+        });
+
+      return res.status(200).json({ response: pythonResponse.data.response });
+
+    } catch (error) {
+        console.error("Error communicating with Python chatbot:", error.message);
+        return res.status(500).json({ error: "Chatbot service is currently unavailable" });
+    }
+};
+
+
+export default {loginUserController ,logoutUserController,getMeController,registerUserController,handleChat}
